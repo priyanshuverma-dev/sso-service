@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       { message: "Access Granted!" },
       {
         headers: {
-          "Set-Cookie": `${AUTH_COOKIE}=${session.session}; HttpOnly; Secure; SameSite=Strict;Path=/`,
+          "Set-Cookie": `${AUTH_COOKIE}=${session.session}; HttpOnly; SameSite=Strict;Path=/`,
         },
       }
     );

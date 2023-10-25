@@ -2,7 +2,7 @@ import { AUTH_COOKIE, JWT_SECRET } from "@/lib/core";
 import { NextRequest, NextResponse } from "next/server";
 import JWT from "jsonwebtoken";
 
-export const VALIDATE_API_ROUTE = "https://localhost:3000/api/validate";
+export const VALIDATE_API_ROUTE = "http://domainone.com/api/validate";
 
 export async function GET(req: NextRequest) {
   try {

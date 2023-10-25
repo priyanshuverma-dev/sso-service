@@ -1,6 +1,5 @@
 "use client";
 
-import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {

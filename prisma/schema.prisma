@@ -32,3 +32,13 @@ model Session {
 
   @@map("Sessions")
 }
+
+model SSOToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  token     String    @unique
+  clientId  String    @unique
+  domain    String
+  expires   DateTime
+  updatedAt DateTime @default(now())
+  @@map("SSOtokens")
+}
