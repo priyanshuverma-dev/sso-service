@@ -1,49 +1,25 @@
-// "use client";
-import { AUTH_COOKIE, ValidateEmail } from "@/lib/core";
-import { redirect, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
-import { SSO_API_ROUTE } from "../api/sso/route";
-import { getCookie, getCookies } from "cookies-next";
-import Link from "next/link";
-import toast from "react-hot-toast";
-import { LOGIN_API_ROUTE } from "../api/login/route";
-import { cookies } from "next/headers";
+import React from "react";
 import LoginForm from "@/components/login-form";
-
+import SSOCover from "@/providers/sso-provider";
+import { cookies } from "next/headers";
+import { AUTH_COOKIE } from "@/lib/core";
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
+  authToken: string; // Add authToken prop
 };
 
 const SSOPage = (props: Props) => {
-  const cookie = cookies(); // => 'value'
-  const searchParams = props.searchParams;
-  const clientId = searchParams.clientId;
-  const next = searchParams.next;
-  const clientSecret = searchParams.clientSecret;
-  const callback = searchParams.callback;
-
+  const cookie = cookies();
   const authToken = cookie.get(AUTH_COOKIE);
 
-  if (authToken) {
-    fetch(SSO_API_ROUTE, {
-      method: "POST",
-      body: JSON.stringify({
-        domain: next,
-        clientId,
-        token: authToken.value,
-      }),
-    }).then(async (res) => {
-      const body = await res.json();
-      if (res.status === 200) {
-        console.log(body);
-      }
-      console.log(body);
-    });
+  console.log(props.authToken);
+  // const authToken = getCookie("__SecureAuth");
 
-    // redirect(`${callback}?code=`);
-  }
-
-  return <LoginForm />;
+  return (
+    <SSOCover authToken={authToken?.value}>
+      <LoginForm />
+    </SSOCover>
+  );
 };
 
 export default SSOPage;

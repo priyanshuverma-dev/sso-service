@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { cookies } from "next/headers";
+import { ClientCookiesProvider } from "@/providers/cookieProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,8 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Toaster />
-
-        {children}
+        <ClientCookiesProvider value={cookies().getAll()}>
+          {children}
+        </ClientCookiesProvider>
       </body>
     </html>
   );

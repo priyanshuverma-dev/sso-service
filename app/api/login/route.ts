@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function hashPassword(password: string, salt: string): string {
+export function hashPassword(password: string, salt: string): string {
   const hash = createHash("sha256");
   hash.update(password + salt);
   return hash.digest("hex");

@@ -36,7 +36,8 @@ model Session {
 model SSOToken {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   token     String    @unique
-  clientId  String    @unique
+  clientId  String
+  identifier String   @unique
   domain    String
   expires   DateTime
   updatedAt DateTime @default(now())
