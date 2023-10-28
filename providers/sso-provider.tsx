@@ -1,6 +1,6 @@
 "use client";
 import { SSO_API_ROUTE } from "@/app/api/sso/route";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
 type Props = {

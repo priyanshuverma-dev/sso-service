@@ -1,15 +1,13 @@
 import React from "react";
 import MultiStepForm from "./authflow/multi-step-form";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "./ui/button";
+import LoginStepForm from "./login-form";
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
-const AuthFlow = (props: Props) => {
+const LoginAuthFlow = (props: Props) => {
   const searchParams = props.searchParams;
   return (
-    <div className="flex flex-col w-full h-screen items-center justify-center ">
+    <div className="flex flex-col w-full h-screen items-center justify-center">
       <div className=" border-2  rounded-lg">
         <div className="flex border-b-2 p-2 justify-between">
           <div className="flex flex-row">
@@ -34,39 +32,15 @@ const AuthFlow = (props: Props) => {
             <span>v1</span>
           </div>
         </div>
-        <div className="w-full h-ful flex flex-col  p-10">
-          <Link
-            className={cn(buttonVariants({ variant: "outline" }), "m-2")}
-            href={{
-              pathname: "/sso/authflow/signin",
-              query: {
-                next: searchParams.next,
-                callback: searchParams.callback,
-                clientId: searchParams.clientId,
-                clientSecret: searchParams.clientSecret,
-              },
-            }}
-          >
-            Login With Email
-          </Link>
-          <Link
-            className={cn(buttonVariants({ variant: "outline" }), "m-2")}
-            href={{
-              pathname: "/sso/authflow/signup",
-              query: {
-                next: searchParams.next,
-                callback: searchParams.callback,
-                clientId: searchParams.clientId,
-                clientSecret: searchParams.clientSecret,
-              },
-            }}
-          >
-            Create New Account
-          </Link>
+        <div className="w-full h-full">
+          <div className="text-center m-2 font-bold text-xl text-gray-800 font-sans">
+            Login To Your Account
+          </div>
+          <LoginStepForm searchParams={searchParams} />
         </div>
       </div>
     </div>
   );
 };
 
-export default AuthFlow;
+export default LoginAuthFlow;

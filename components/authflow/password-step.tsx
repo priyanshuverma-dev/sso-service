@@ -1,9 +1,18 @@
 "use client";
-
+import clsx from "clsx";
 import React, { useState } from "react";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+interface IProps {
+  id: string;
+  required?: boolean;
+  register: UseFormRegister<FieldValues>;
+  errors: FieldErrors;
+  disabled?: boolean;
+}
 
-const PasswordStep = () => {
+const PasswordStep = (props: IProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const { register, errors, disabled, id, required } = props;
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -11,7 +20,13 @@ const PasswordStep = () => {
   return (
     <div className="flex p-2 m-2 justify-center flex-col">
       <input
-        className="w-[300px] bg-gray-50 p-2 rounded-md border-2 outline-none transition-colors focus:border-blue-400"
+        {...register(id, { required })}
+        className={clsx(
+          `
+        w-[300px] bg-gray-50 p-2 rounded-md border-2 outline-none transition-colors focus:border-blue-400`,
+          errors[id] && "focus:ring-rose-500",
+          disabled && "opacity-50 cursor-default"
+        )}
         name="password"
         placeholder="Password"
         type={showPassword ? "text" : "password"} // Toggle input type
@@ -19,12 +34,12 @@ const PasswordStep = () => {
       <label htmlFor="password" className="p-1 text-sm">
         Password
       </label>
-      <button
+      <div
         className="mt-2 p-1 text-blue-500 cursor-pointer"
         onClick={togglePasswordVisibility}
       >
         {showPassword ? "Hide" : "Show"} Password
-      </button>
+      </div>
     </div>
   );
 };

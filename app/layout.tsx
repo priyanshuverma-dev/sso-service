@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { cookies } from "next/headers";
 import { ClientCookiesProvider } from "@/providers/cookieProvider";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,12 +19,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Toaster />
-        <ClientCookiesProvider value={cookies().getAll()}>
-          {children}
-        </ClientCookiesProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <Toaster />
+          <ClientCookiesProvider value={cookies().getAll()}>
+            {children}
+          </ClientCookiesProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
