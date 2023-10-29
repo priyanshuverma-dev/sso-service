@@ -10,6 +10,7 @@ import TextStep from "./authflow/text-step";
 import EmailStep from "./authflow/email-step";
 import PasswordStep from "./authflow/password-step";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "./ui/skeleton";
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
@@ -144,6 +145,9 @@ const RegisterStepForm = (props: Props) => {
           throw new Error(body.message);
         }
         toast.success("User Created!");
+        router.push(
+          `/sso/authflow/signin?next=${searchParams?.next}&callback=${searchParams?.callback}&clientId=${searchParams?.clientId}&clientSecret=${searchParams?.clientSecret}`
+        );
       }
       console.log(data);
     } catch (error: any) {
@@ -152,7 +156,6 @@ const RegisterStepForm = (props: Props) => {
       setError("email", {
         message: error.message,
       });
-      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -171,6 +174,11 @@ const RegisterStepForm = (props: Props) => {
   return (
     <form onSubmit={handleSubmit(handleNext)}>
       <div className="m-2 h-full flex flex-col items-center justify-center">
+        {FormSteps[activeStep] === undefined && (
+          <div className="flex items-center">
+            <Skeleton className="h-10 w-[250px]" />
+          </div>
+        )}
         {FormSteps[activeStep]?.component}
 
         <div className="flex justify-between flex-row items-center w-full m-12 ">

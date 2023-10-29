@@ -54,3 +54,17 @@ export async function getToken({
     return null;
   }
 }
+
+export function getCharFromName(name: string) {
+  const nameSpilt = name.split(" ");
+
+  if (nameSpilt.length > 1) {
+    const firstChar = nameSpilt[0].at(0);
+    const secChar = nameSpilt[1].at(0);
+    return `${firstChar}${secChar}`.toUpperCase();
+  }
+
+  const firstChar = nameSpilt[0].at(0);
+
+  return `${firstChar}`.toUpperCase();
+}

@@ -10,6 +10,8 @@ import EmailStep from "./authflow/email-step";
 import PasswordStep from "./authflow/password-step";
 import { FORM_VALIDATE_API_ROUTE } from "@/app/api/sso/form/route";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "./ui/skeleton";
+import LastStep from "./authflow/last-step";
 
 type Step = {
   id: number;
@@ -82,7 +84,7 @@ const LoginStepForm = (props: Props) => {
 
         const payload = await res.json();
 
-        if (res.status != 200) throw new Error(payload.message);
+        if (res.status != 200) throw new Error(`email__${payload.message}`);
 
         console.log(data);
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -117,19 +119,26 @@ const LoginStepForm = (props: Props) => {
         const body = await res.json();
         console.log(body);
         if (res.status !== 200) {
-          throw new Error(body.message);
+          throw new Error(`password__${body.message}`);
         }
         toast.success("User LoggedIn!");
       }
-      console.log(data);
     } catch (error: any) {
       console.log(` %c USER_LOGIN_CLIENT_SSO: ${error}`, "color: yellow");
-
-      toast.error(error.message);
-      setError("email", {
-        message: error.message,
-      });
-      toast.error(error.message);
+      const des = error.message.split("__");
+      if (des[0] === "email") {
+        setError("email", {
+          message: des[1],
+        });
+        toast.error(des[1]);
+      }
+      if (des[0] === "password") {
+        setActiveStep(1);
+        setError("password", {
+          message: des[1],
+        });
+        toast.error(des[1]);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -147,6 +156,11 @@ const LoginStepForm = (props: Props) => {
   return (
     <form onSubmit={handleSubmit(handleNext)}>
       <div className="m-2 h-full flex flex-col items-center justify-center">
+        {FormSteps[activeStep] === undefined && (
+          <div className="flex items-center">
+            <Skeleton className="h-10 w-[250px]" />
+          </div>
+        )}
         {FormSteps[activeStep]?.component}
 
         <div className="flex justify-between flex-row items-center w-full m-12 ">

@@ -26,6 +26,11 @@ const EmailStep = (props: IProps) => {
       <label htmlFor="email" className="p-1 text-sm">
         Email or Username
       </label>
+      {errors[id]?.message && (
+        <label htmlFor="email" className="p-1 text-sm text-red-600">
+          {errors[id]?.message?.toString()}
+        </label>
+      )}
     </div>
   );
 };

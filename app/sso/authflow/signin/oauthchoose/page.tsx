@@ -1,10 +1,41 @@
+import UserCell from "@/components/user-cell";
 import React from "react";
-import LoginStepForm from "./login-form";
-type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+
+type Profile = {
+  id: number;
+  name: string;
+  email: string;
+  image?: string;
 };
-const LoginAuthFlow = (props: Props) => {
-  const searchParams = props.searchParams;
+
+const fetchProfiles = async () => {
+  const ms = setTimeout(() => {}, 4000);
+
+  return [
+    {
+      id: 1,
+      name: "Priyanshu",
+      email: "priyanshu@gmail.com",
+      image: "https://github.com/p7uverma.png",
+    },
+    {
+      id: 2,
+      name: "Tanya Varma",
+      email: "tanya@gmail.com",
+      image: "https://github.com/tanya-varma.png",
+    },
+    {
+      id: 3,
+      name: "Deepanshi",
+      email: "deepanshi@gmail.com",
+      image: "",
+    },
+  ];
+};
+
+const OAuthChoosePage = async () => {
+  const profiles: Profile[] = await fetchProfiles();
+
   return (
     <div className="flex flex-col w-full h-screen items-center justify-center">
       <div className=" border-2  rounded-lg">
@@ -32,14 +63,25 @@ const LoginAuthFlow = (props: Props) => {
           </div>
         </div>
         <div className="w-full h-full">
-          <div className="text-center m-2 font-bold text-xl text-gray-800 font-sans">
-            Login To Your Account
+          <div className="text-center m-2 font-semibold text-gray-800 font-sans p-3">
+            Choose Account to Login In
           </div>
-          <LoginStepForm searchParams={searchParams} />
+          <div className="flex flex-col items-center justify-center m-3">
+            {profiles.map((profile) => {
+              return (
+                <UserCell
+                  email={profile.email}
+                  name={profile.name}
+                  image={profile.image}
+                  key={profile.id}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default LoginAuthFlow;
+export default OAuthChoosePage;
