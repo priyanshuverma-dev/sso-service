@@ -1,7 +1,7 @@
 "use client";
 
 import { LOGIN_API_ROUTE } from "@/app/api/login/route";
-import { ValidateEmail } from "@/lib/core";
+import { BASE_PARAMS, ValidateEmail } from "@/lib/core";
 import Link from "next/link";
 import React, { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -146,9 +146,7 @@ const LoginStepForm = (props: Props) => {
 
   const handleBack = () => {
     if (activeStep == 0) {
-      router.push(
-        `/sso/authflow/signup?next=${searchParams?.next}&callback=${searchParams?.callback}&clientId=${searchParams?.clientId}&clientSecret=${searchParams?.clientSecret}`
-      );
+      router.push(`/sso/authflow/signup?${BASE_PARAMS(searchParams)}`);
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };

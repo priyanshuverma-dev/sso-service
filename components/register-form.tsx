@@ -11,6 +11,7 @@ import EmailStep from "./authflow/email-step";
 import PasswordStep from "./authflow/password-step";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "./ui/skeleton";
+import { BASE_PARAMS } from "@/lib/core";
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
@@ -145,9 +146,7 @@ const RegisterStepForm = (props: Props) => {
           throw new Error(body.message);
         }
         toast.success("User Created!");
-        router.push(
-          `/sso/authflow/signin?next=${searchParams?.next}&callback=${searchParams?.callback}&clientId=${searchParams?.clientId}&clientSecret=${searchParams?.clientSecret}`
-        );
+        router.push(`/sso/authflow/signin?${BASE_PARAMS(searchParams)}`);
       }
       console.log(data);
     } catch (error: any) {

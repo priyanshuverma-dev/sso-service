@@ -2,6 +2,9 @@ export const BASE = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
 export const JWT_SECRET = process.env.JWT_SECRET || "priyanshu";
 export const AUTH_COOKIE = "__SecureAuth";
 
+export const BASE_PARAMS = (params: any) =>
+  `client_id=${params?.client_id}&scope=${params?.scope}&response_type=${params?.response_type}&redirect_uri=${params?.redirect_uri}&state=${params.state}&client_secret=${params?.client_secret}`;
+
 import { createHmac } from "crypto";
 import { NextRequest } from "next/server";
 import { VALIDATE_API_ROUTE } from "@/app/api/validate/route";

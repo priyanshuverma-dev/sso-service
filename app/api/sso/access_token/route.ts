@@ -3,63 +3,63 @@ import { NextRequest, NextResponse } from "next/server";
 import { addSeconds } from "date-fns"; // You may need to import date-fns or a similar library for date manipulation
 import { decode, sign, verify } from "jsonwebtoken";
 import { JWT_SECRET } from "@/lib/core";
-import { hashPassword } from "../login/route";
+import { hashPassword } from "../../login/route";
 
 export const SSO_API_ROUTE = "http://domainone.com/api/sso";
 
 export async function POST(req: NextRequest) {
   try {
-    // console.log(req.headers);
-    const payload = await req.json();
+    const rawText = await req.text();
+    const payload = new URLSearchParams(rawText);
+    const token = payload.get("code");
+    const grant_type = payload.get("grant_type");
+    const domain = payload.get("redirect_uri");
 
-    const { domain, clientId, token, state } = payload;
-
-    if (!domain || !clientId || !token || !state) {
-      throw new Error("No complete");
+    if (!token) {
+      return NextResponse.json(
+        { message: "No identifier Code provided" },
+        { status: 401 }
+      );
     }
-    console.log(state);
-    const exists = await prisma.sSOToken.findUnique({
+
+    const ssoToken = await prisma.sSOToken.findUnique({
       where: {
-        token: token,
+        identifier: token,
       },
     });
 
-    if (exists) {
-      return NextResponse.json(exists);
+    if (!ssoToken) {
+      return NextResponse.json({ message: "Token not found" }, { status: 401 });
     }
 
-    const decodeData = verify(token, JWT_SECRET);
-    if (!decodeData) throw new Error("Invalid Token");
-    const userId = (decodeData as any).id;
+    const decodeData = verify(ssoToken.token, JWT_SECRET);
 
-    const tempToken = sign(
+    if (!decodeData) throw new Error("Invalid Token");
+
+    const userId = (decodeData as any).userId;
+
+    // Token is valid, create a new JWT token and send it
+    const jwtToken = sign(
       {
-        clientId: clientId,
-        domain: domain,
+        clientId: ssoToken.clientId,
         userId: userId,
+        identifierCode: token,
       },
       JWT_SECRET
     );
-    const identifier = hashPassword(domain, Date.now().toString());
+    // TODO:
+    // !access_token?: string;
+    // !token_type?: string;
+    // !id_token?: string;
+    // !refresh_token?: string;
+    // !expires_in?: number;
+    // !expires_at?: number;
+    // !session_state?: string;
+    // !scope?: string;
 
-    const expirationTime = addSeconds(new Date(), 300); // 300 seconds (5 minutes) from the current time
-
-    const temp = await prisma.sSOToken.create({
-      data: {
-        clientId,
-        domain,
-        token: tempToken,
-        expires: expirationTime,
-        identifier,
-      },
-    });
-    if (!temp) throw new Error("Error in creating temp token");
-    return NextResponse.json({
-      state: state,
-      temp,
-    });
+    return NextResponse.json({ access_token: jwtToken });
   } catch (error: any) {
-    console.error(`SSO_SERVER_POST: ${error}`);
+    console.error(`SSO_SERVER_POST_ACCESSS: ${error}`);
 
     return NextResponse.json(
       {

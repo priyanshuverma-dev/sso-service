@@ -6,16 +6,17 @@ import JWT from "jsonwebtoken";
 
 export const SSO_RETRIVE_API_ROUTE = "http://domainone.com/api/sso/retrive";
 export async function GET(req: NextRequest) {
-  const tempToken = req.headers.get("tempToken");
+  // const tempToken = req.headers.get("tempToken");
+  // const tempToken = req.cookies.get(AUTH_COOKIE);
   try {
-    if (!tempToken) {
-      throw new Error("bad Request");
-    }
+    const authorization = req.headers.get("authorization");
+
+    if (!authorization) throw new Error("no authorization");
+
+    const tempToken = authorization.replace("Bearer ", "");
 
     const decodeData = verify(tempToken, JWT_SECRET);
-
     if (!decodeData) throw new Error("Invalid Token");
-
     const uid = (decodeData as any).userId;
 
     const user = await prisma.user.findUnique({
@@ -40,7 +41,13 @@ export async function GET(req: NextRequest) {
       throw new Error("Error creating session.");
     }
 
-    return NextResponse.json({ token: session.session });
+    return NextResponse.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      picture: "",
+      sub: session.session,
+    });
   } catch (error: any) {
     console.log("RETRIVE_GET_SERVER", error);
     return NextResponse.json(

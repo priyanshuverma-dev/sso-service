@@ -12,10 +12,11 @@ const SSOCover = (props: Props) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const authToken = props.authToken;
-  const clientId = searchParams.get("clientId");
-  const next = searchParams.get("next");
-  const clientSecret = searchParams.get("clientSecret");
-  const callback = searchParams.get("callback");
+  const clientId = searchParams.get("client_id");
+  const next = searchParams.get("redirect_uri");
+  const clientSecret = searchParams.get("client_secret");
+  const state = searchParams.get("state");
+  const callback = searchParams.get("redirect_uri");
 
   useEffect(() => {
     if (authToken) {
@@ -25,13 +26,16 @@ const SSOCover = (props: Props) => {
           domain: next,
           clientId,
           token: authToken,
+          state,
         }),
       })
         .then(async (res) => {
           const body = await res.json();
           console.log(body);
           if (res.status == 200) {
-            router.replace(`${callback}?code=${body.identifier}`);
+            router.replace(
+              `${callback}?state=${body.state}&access_token=${body.temp.identifier}&code=${body.temp.identifier}`
+            );
           }
           //   redirect(`${callback}?code=${body.identifier}`);
         })

@@ -3,6 +3,7 @@ import MultiStepForm from "./authflow/multi-step-form";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
+import { BASE_PARAMS } from "@/lib/core";
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
@@ -37,29 +38,13 @@ const AuthFlow = (props: Props) => {
         <div className="w-full h-ful flex flex-col  p-10">
           <Link
             className={cn(buttonVariants({ variant: "outline" }), "m-2")}
-            href={{
-              pathname: "/sso/authflow/signin",
-              query: {
-                next: searchParams.next,
-                callback: searchParams.callback,
-                clientId: searchParams.clientId,
-                clientSecret: searchParams.clientSecret,
-              },
-            }}
+            href={`/sso/authflow/signin?${BASE_PARAMS(searchParams)}`}
           >
             Login With Email
           </Link>
           <Link
             className={cn(buttonVariants({ variant: "outline" }), "m-2")}
-            href={{
-              pathname: "/sso/authflow/signup",
-              query: {
-                next: searchParams.next,
-                callback: searchParams.callback,
-                clientId: searchParams.clientId,
-                clientSecret: searchParams.clientSecret,
-              },
-            }}
+            href={`/sso/authflow/signup?${BASE_PARAMS(searchParams)}`}
           >
             Create New Account
           </Link>
