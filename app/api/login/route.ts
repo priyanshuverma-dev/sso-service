@@ -2,7 +2,7 @@ import { AUTH_COOKIE, BASE, JWT_SECRET } from "@/lib/core";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import JWT from "jsonwebtoken";
-import { randomBytes, createHash } from "crypto";
+import { createHash } from "crypto";
 
 export const LOGIN_API_ROUTE = `${BASE}/api/login`;
 

@@ -40,17 +40,16 @@ export async function POST(req: NextRequest) {
     const salt = randomBytes(16).toString("hex");
     const hashedPassword = hashPassword(password, salt);
 
-    const subdomain = email.split("@")[0].replace(/\./g, "-");
-
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
         hashedPassword,
-        subdomain,
         salt,
       },
     });
+
+    console.log(newUser);
 
     return NextResponse.json(newUser);
   } catch (error: any) {

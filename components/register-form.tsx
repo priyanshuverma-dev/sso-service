@@ -100,7 +100,7 @@ const RegisterStepForm = (props: Props) => {
 
         const payload = await res.json();
 
-        if (res.status != 200) throw new Error(payload.message);
+        if (res.status != 200) throw new Error(`email__${payload.message}`);
 
         console.log(data);
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -143,7 +143,7 @@ const RegisterStepForm = (props: Props) => {
         const body = await res.json();
         console.log(body);
         if (res.status !== 200) {
-          throw new Error(body.message);
+          throw new Error(`server__${body.message}`);
         }
         toast.success("User Created!");
         router.push(`/sso/authflow/signin?${BASE_PARAMS(searchParams)}`);
@@ -151,10 +151,20 @@ const RegisterStepForm = (props: Props) => {
       console.log(data);
     } catch (error: any) {
       console.log(` %c USER_REGISTER_CLIENT_SSO: ${error}`, "color: yellow");
-      toast.error(error.message);
-      setError("email", {
-        message: error.message,
-      });
+      const des = error.message.split("__");
+      if (des[0] === "email") {
+        setError("email", {
+          message: des[1],
+        });
+        toast.error(des[1]);
+      }
+      if (des[0] === "server") {
+        setActiveStep(1);
+        setError("password", {
+          message: des[1],
+        });
+        toast.error(des[1]);
+      }
     } finally {
       setIsLoading(false);
     }

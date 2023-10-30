@@ -119,7 +119,7 @@ const LoginStepForm = (props: Props) => {
         const body = await res.json();
         console.log(body);
         if (res.status !== 200) {
-          throw new Error(`password__${body.message}`);
+          throw new Error(`server__${body.message}`);
         }
         toast.success("User LoggedIn!");
       }
@@ -132,7 +132,7 @@ const LoginStepForm = (props: Props) => {
         });
         toast.error(des[1]);
       }
-      if (des[0] === "password") {
+      if (des[0] === "server") {
         setActiveStep(1);
         setError("password", {
           message: des[1],

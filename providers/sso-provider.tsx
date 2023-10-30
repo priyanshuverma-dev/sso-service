@@ -16,6 +16,7 @@ const SSOCover = (props: Props) => {
   const next = searchParams.get("redirect_uri");
   const clientSecret = searchParams.get("client_secret");
   const state = searchParams.get("state");
+  const scope = searchParams.get("scope");
   const callback = searchParams.get("redirect_uri");
 
   useEffect(() => {
@@ -27,6 +28,8 @@ const SSOCover = (props: Props) => {
           clientId,
           token: authToken,
           state,
+          clientSecret,
+          scope,
         }),
       })
         .then(async (res) => {
@@ -37,7 +40,6 @@ const SSOCover = (props: Props) => {
               `${callback}?state=${body.state}&access_token=${body.temp.identifier}&code=${body.temp.identifier}`
             );
           }
-          //   redirect(`${callback}?code=${body.identifier}`);
         })
         .catch((e) => console.log(e));
     }
