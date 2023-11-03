@@ -1,28 +1,28 @@
 "use client";
 
-import { LOGIN_API_ROUTE } from "@/app/api/login/route";
-import { BASE_PARAMS, ValidateEmail } from "@/lib/core";
-import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
+
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { FORM_VALIDATE_API_ROUTE } from "@/app/api/sso/form/route";
 import toast from "react-hot-toast";
+import { REGISTER_API_ROUTE } from "@/app/api/register/route";
+import TextStep from "./authflow/text-step";
 import EmailStep from "./authflow/email-step";
 import PasswordStep from "./authflow/password-step";
-import { FORM_VALIDATE_API_ROUTE } from "@/app/api/sso/form/route";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "./ui/skeleton";
-import LastStep from "./authflow/last-step";
-
+import { BASE_PARAMS } from "@/lib/core";
+type Props = {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 type Step = {
   id: number;
   component: React.ReactNode;
 };
 
-type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-const LoginStepForm = (props: Props) => {
+const ForgetPasswordForm = (props: Props) => {
   const [isLoading, setIsLoading] = React.useState(false); // Add loading state
+
   const {
     register,
     handleSubmit,
@@ -30,14 +30,14 @@ const LoginStepForm = (props: Props) => {
     setError,
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
   });
+
   const FormSteps: Step[] = [
     {
-      id: 1,
+      id: 2,
       component: (
         <EmailStep
           disabled={isLoading}
@@ -49,7 +49,7 @@ const LoginStepForm = (props: Props) => {
       ),
     },
     {
-      id: 2,
+      id: 3,
       component: (
         <PasswordStep
           disabled={isLoading}
@@ -57,19 +57,13 @@ const LoginStepForm = (props: Props) => {
           errors={errors}
           required
           id="password"
-          forgetPassword
-          onForgetPassword={() =>
-            router.push(`/sso/authflow/forget?${BASE_PARAMS(searchParams)}`)
-          }
         />
       ),
     },
   ];
-
   const searchParams = props.searchParams;
   const [activeStep, setActiveStep] = React.useState(0);
   const router = useRouter();
-
   const handleNext: SubmitHandler<FieldValues> = async (data) => {
     try {
       if (activeStep == FormSteps.length) return;
@@ -82,7 +76,7 @@ const LoginStepForm = (props: Props) => {
           body: JSON.stringify({
             type: "email",
             field: data.email,
-            from: "login",
+            from: "register",
           }),
         });
 
@@ -92,7 +86,10 @@ const LoginStepForm = (props: Props) => {
 
         console.log(data);
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+        // data.name
       }
+
       // !Password
       if (activeStep === 1) {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -100,19 +97,24 @@ const LoginStepForm = (props: Props) => {
 
       // !Submission
       if (activeStep === FormSteps.length - 1) {
-        if (!data.email) {
+        if (!data.name) {
           setActiveStep(0);
         }
 
-        if (!data.password) {
+        if (!data.email) {
           setActiveStep(1);
         }
 
+        if (!data.password) {
+          setActiveStep(2);
+        }
+
         const user = {
+          name: data.name,
           email: data.email,
           password: data.password,
         };
-        const res = await fetch(LOGIN_API_ROUTE, {
+        const res = await fetch(REGISTER_API_ROUTE, {
           method: "POST",
           body: JSON.stringify(user),
           headers: {
@@ -125,11 +127,12 @@ const LoginStepForm = (props: Props) => {
         if (res.status !== 200) {
           throw new Error(`server__${body.message}`);
         }
-        toast.success("User LoggedIn!");
-        router.push(`${searchParams.redirect_uri}`);
+        toast.success("User Created!");
+        router.push(`/sso/authflow/signin?${BASE_PARAMS(searchParams)}`);
       }
+      console.log(data);
     } catch (error: any) {
-      console.log(` %c USER_LOGIN_CLIENT_SSO: ${error}`, "color: yellow");
+      console.log(` %c USER_REGISTER_CLIENT_SSO: ${error}`, "color: yellow");
       const des = error.message.split("__");
       if (des[0] === "email") {
         setError("email", {
@@ -151,8 +154,11 @@ const LoginStepForm = (props: Props) => {
 
   const handleBack = () => {
     if (activeStep == 0) {
-      router.push(`/sso/authflow/signup?${BASE_PARAMS(searchParams)}`);
+      router.push(
+        `/sso/authflow/signin?next=${searchParams?.next}&callback=${searchParams?.callback}&clientId=${searchParams?.clientId}&clientSecret=${searchParams?.clientSecret}`
+      );
     }
+
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
@@ -172,7 +178,7 @@ const LoginStepForm = (props: Props) => {
             type="button"
             className={`text-blue-600 hover:bg-blue-50 transition-colors bg-opacity-5 p-2 rounded-md `}
           >
-            {activeStep === 0 ? "Create New" : "Back"}
+            {activeStep === 0 ? "Login" : "Back"}
           </button>
 
           <button
@@ -194,4 +200,4 @@ const LoginStepForm = (props: Props) => {
   );
 };
 
-export default LoginStepForm;
+export default ForgetPasswordForm;

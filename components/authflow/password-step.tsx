@@ -8,6 +8,8 @@ interface IProps {
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors;
   disabled?: boolean;
+  forgetPassword?: boolean;
+  onForgetPassword?: () => void;
 }
 
 const PasswordStep = (props: IProps) => {
@@ -40,6 +42,14 @@ const PasswordStep = (props: IProps) => {
       >
         {showPassword ? "Hide" : "Show"} Password
       </div>
+      {props.forgetPassword && (
+        <div
+          className="mt-2 p-1 text-blue-500 cursor-pointer"
+          onClick={props.onForgetPassword}
+        >
+          Forget Password?
+        </div>
+      )}
     </div>
   );
 };
