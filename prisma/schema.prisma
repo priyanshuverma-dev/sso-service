@@ -48,6 +48,15 @@ model Site {
 
 }
 
+model VerificationToken {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  token       String   @unique
+  state       String   @unique
+  userId      String   
+  email       String
+  expires     DateTime
+  updatedAt   DateTime @default(now())
+}
 
 model SSOToken {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId

@@ -1,9 +1,8 @@
 import { HelloEmail } from "@/email-template/hello";
-import { BASE } from "@/lib/core";
+import { BASE, resend } from "@/lib/core";
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 export const EMAIL_API_ROUTE = `${BASE}/api/send`;
-const resend = new Resend("re_aJnm41fF_Bf4erb91zXgP3Z92X9pTFab9");
 
 export async function POST(req: NextRequest) {
   try {

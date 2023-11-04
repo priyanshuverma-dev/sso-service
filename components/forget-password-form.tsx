@@ -1,17 +1,25 @@
 "use client";
-
 import React from "react";
 
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import {
+  Controller,
+  FieldValues,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import { FORM_VALIDATE_API_ROUTE } from "@/app/api/sso/form/route";
 import toast from "react-hot-toast";
 import { REGISTER_API_ROUTE } from "@/app/api/register/route";
-import TextStep from "./authflow/text-step";
 import EmailStep from "./authflow/email-step";
 import PasswordStep from "./authflow/password-step";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "./ui/skeleton";
 import { BASE_PARAMS } from "@/lib/core";
+import OTPInput from "react-otp-input";
+import clsx from "clsx";
+import { SEND_OTP_API_ROUTE } from "@/app/api/sso/sendotp/route";
+import { FORGET_PASSWORD_VERIFY_API_ROUTE } from "@/app/api/sso/recove/verify/route";
+import { FORGET_PASSWORD_RESET_API_ROUTE } from "@/app/api/sso/recove/password/route";
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
@@ -30,16 +38,19 @@ const ForgetPasswordForm = (props: Props) => {
     handleSubmit,
     formState: { errors },
     setError,
+    getValues,
+    control,
   } = useForm<FieldValues>({
     defaultValues: {
       email: email,
       password: "",
+      otp: null,
     },
   });
 
   const FormSteps: Step[] = [
     {
-      id: 2,
+      id: 1,
       component: (
         <EmailStep
           disabled={isLoading}
@@ -47,6 +58,62 @@ const ForgetPasswordForm = (props: Props) => {
           errors={errors}
           required
           id="email"
+        />
+      ),
+    },
+    {
+      id: 2,
+      component: (
+        <Controller
+          name="otp"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <div>
+              <div className="w-[300px] p-2 mb-3">
+                <span>
+                  Please enter the OTP sent to your email{" "}
+                  <b> {getValues("email")}</b>.
+                </span>
+              </div>
+              <OTPInput
+                value={field.value}
+                onChange={field.onChange}
+                numInputs={6}
+                shouldAutoFocus
+                inputType="text"
+                renderInput={(props) => (
+                  <input
+                    disabled={isLoading}
+                    {...props}
+                    className={clsx(
+                      `
+                      text-xl !w-[3rem] bg-gray-50 p-2 rounded-md border-2 outline-none transition-colors focus:border-blue-400 mx-1.5`,
+                      isLoading && "opacity-50 cursor-default"
+                    )}
+                  />
+                )}
+              />
+              {errors.otp && (
+                <span className="p-1 text-sm text-red-600">
+                  This field is required.
+                </span>
+              )}
+
+              <div className="w-[300px] p-2 mt-3">
+                <span>
+                  Didn't get{" "}
+                  <button
+                    type="submit"
+                    disabled={isLoading} // Disable button when loading
+                    className={`text-blue-600 hover:bg-blue-50 transition-colors bg-opacity-5 p-2 rounded-md `}
+                  >
+                    Resend
+                  </button>
+                </span>
+              </div>
+            </div>
+          )}
         />
       ),
     },
@@ -86,23 +153,50 @@ const ForgetPasswordForm = (props: Props) => {
 
         if (res.status != 200) throw new Error(`email__${payload.message}`);
 
-        console.log(data);
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        const sendOTP = await fetch(SEND_OTP_API_ROUTE, {
+          method: "POST",
+          body: JSON.stringify({
+            email: data.email,
+            state: searchParams.state,
+          }),
+        });
 
-        // data.name
+        const sentOTPRes = await sendOTP.json();
+
+        if (sendOTP.status != 200)
+          throw new Error(`otp__${sentOTPRes.message}`);
+
+        console.log(sentOTPRes);
+
+        toast.success(sentOTPRes.message);
+
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
       }
 
-      // !Password
+      // !OTP
       if (activeStep === 1) {
+        const verifyOTP = await fetch(FORGET_PASSWORD_VERIFY_API_ROUTE, {
+          method: "POST",
+          body: JSON.stringify({
+            email: data.email,
+            state: searchParams.state,
+            otp: data.otp,
+          }),
+        });
+
+        const body = await verifyOTP.json();
+
+        if (verifyOTP.status != 200) throw new Error(`otp__${body.message}`);
+
+        console.log(body);
+
+        toast.success(body.message);
+
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
       }
 
       // !Submission
       if (activeStep === FormSteps.length - 1) {
-        if (!data.name) {
-          setActiveStep(0);
-        }
-
         if (!data.email) {
           setActiveStep(1);
         }
@@ -111,30 +205,37 @@ const ForgetPasswordForm = (props: Props) => {
           setActiveStep(2);
         }
 
-        const user = {
-          name: data.name,
+        const payload = {
           email: data.email,
+          state: searchParams.state,
+          otp: data.otp,
           password: data.password,
         };
-        const res = await fetch(REGISTER_API_ROUTE, {
+        const res = await fetch(FORGET_PASSWORD_RESET_API_ROUTE, {
           method: "POST",
-          body: JSON.stringify(user),
+          body: JSON.stringify(payload),
           headers: {
             "Content-Type": "application/json",
           },
         });
 
         const body = await res.json();
-        console.log(body);
+
         if (res.status !== 200) {
           throw new Error(`server__${body.message}`);
         }
-        toast.success("User Created!");
+
+        console.log(body);
+        toast.success(body.message);
+
         router.push(`/sso/authflow/signin?${BASE_PARAMS(searchParams)}`);
       }
       console.log(data);
     } catch (error: any) {
-      console.log(` %c USER_REGISTER_CLIENT_SSO: ${error}`, "color: yellow");
+      console.log(
+        ` %c USER_FORGET_PASSWORD_CLIENT_SSO: ${error}`,
+        "color: yellow"
+      );
       const des = error.message.split("__");
       if (des[0] === "email") {
         setError("email", {
@@ -142,8 +243,14 @@ const ForgetPasswordForm = (props: Props) => {
         });
         toast.error(des[1]);
       }
+      if (des[0] === "otp") {
+        setError("otp", {
+          message: des[1],
+        });
+        toast.error(des[1]);
+      }
       if (des[0] === "server") {
-        setActiveStep(1);
+        setActiveStep(2);
         setError("password", {
           message: des[1],
         });
