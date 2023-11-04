@@ -172,9 +172,7 @@ const RegisterStepForm = (props: Props) => {
 
   const handleBack = () => {
     if (activeStep == 0) {
-      router.push(
-        `/sso/authflow/signin?next=${searchParams?.next}&callback=${searchParams?.callback}&clientId=${searchParams?.clientId}&clientSecret=${searchParams?.clientSecret}`
-      );
+      router.push(`/sso/authflow/signin?${BASE_PARAMS(searchParams)}`);
     }
 
     setActiveStep((prevActiveStep) => prevActiveStep - 1);

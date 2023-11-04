@@ -27,6 +27,7 @@ export function ValidateEmail(mail: string) {
     status: false,
   };
 }
+
 export async function getToken({
   req,
 }: {

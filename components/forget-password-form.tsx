@@ -23,6 +23,8 @@ type Step = {
 const ForgetPasswordForm = (props: Props) => {
   const [isLoading, setIsLoading] = React.useState(false); // Add loading state
 
+  const email = props.searchParams.email;
+
   const {
     register,
     handleSubmit,
@@ -30,7 +32,7 @@ const ForgetPasswordForm = (props: Props) => {
     setError,
   } = useForm<FieldValues>({
     defaultValues: {
-      email: "",
+      email: email,
       password: "",
     },
   });
@@ -76,7 +78,7 @@ const ForgetPasswordForm = (props: Props) => {
           body: JSON.stringify({
             type: "email",
             field: data.email,
-            from: "register",
+            from: "forget-password",
           }),
         });
 
@@ -154,9 +156,7 @@ const ForgetPasswordForm = (props: Props) => {
 
   const handleBack = () => {
     if (activeStep == 0) {
-      router.push(
-        `/sso/authflow/signin?next=${searchParams?.next}&callback=${searchParams?.callback}&clientId=${searchParams?.clientId}&clientSecret=${searchParams?.clientSecret}`
-      );
+      router.push(`/sso/authflow/signin?${BASE_PARAMS(searchParams)}`);
     }
 
     setActiveStep((prevActiveStep) => prevActiveStep - 1);

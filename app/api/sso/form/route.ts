@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
       from: string;
     } = payload;
 
+    // For Login Page
     if (from === "login") {
       if (type === "email") {
         const user = await prisma.user.findUnique({
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // For Register Page
     if (from === "register") {
       if (type === "email") {
         const user = await prisma.user.findUnique({
@@ -74,6 +76,42 @@ export async function POST(req: NextRequest) {
         }
       );
     }
+
+    // For Forget Password Page
+    if (from === "forget-password") {
+      if (type === "email") {
+        const user = await prisma.user.findUnique({
+          where: {
+            email: field,
+          },
+        });
+
+        if (!user) {
+          return NextResponse.json(
+            {
+              message: "User not exist with email!",
+            },
+            {
+              status: 400,
+            }
+          );
+        }
+
+        return NextResponse.json({
+          message: "Validate",
+        });
+      }
+
+      return NextResponse.json(
+        {
+          message: "type not provided!",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
     return NextResponse.json(
       {
         message: "No Req",

@@ -5,6 +5,7 @@ type Props = {
 };
 const RegisterAuthFlow = (props: Props) => {
   const searchParams = props.searchParams;
+
   return (
     <div className="flex flex-col w-full h-screen items-center justify-center">
       <div className=" border-2  rounded-lg">
@@ -24,7 +25,7 @@ const RegisterAuthFlow = (props: Props) => {
               </svg>
             </div>
             <span className="text-lg font-bold text-gray-800 text-left ">
-              Sign with Epoch
+              Sign with GateSync
             </span>
           </div>
           <div>

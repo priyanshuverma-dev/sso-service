@@ -24,7 +24,7 @@ const ForgetPasswordFlow = (props: Props) => {
               </svg>
             </div>
             <span className="text-lg font-bold text-gray-800 text-left ">
-              Sign with Epoch
+              Sign with GateSync
             </span>
           </div>
           <div>

@@ -27,6 +27,7 @@ const LoginStepForm = (props: Props) => {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
     setError,
   } = useForm<FieldValues>({
     defaultValues: {
@@ -59,7 +60,11 @@ const LoginStepForm = (props: Props) => {
           id="password"
           forgetPassword
           onForgetPassword={() =>
-            router.push(`/sso/authflow/forget?${BASE_PARAMS(searchParams)}`)
+            router.push(
+              `/sso/authflow/forget?${BASE_PARAMS(
+                searchParams
+              )}&email=${getValues("email")}`
+            )
           }
         />
       ),

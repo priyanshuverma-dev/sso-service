@@ -1,5 +1,4 @@
 import React from "react";
-import MultiStepForm from "./authflow/multi-step-form";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
@@ -7,7 +6,8 @@ import { BASE_PARAMS } from "@/lib/core";
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
-const AuthFlow = (props: Props) => {
+
+const AuthFlow = async (props: Props) => {
   const searchParams = props.searchParams;
   return (
     <div className="flex flex-col w-full h-screen items-center justify-center ">
@@ -28,25 +28,19 @@ const AuthFlow = (props: Props) => {
               </svg>
             </div>
             <span className="text-lg font-bold text-gray-800 text-left ">
-              Sign with Epoch
+              Sign with GateSync
             </span>
           </div>
           <div>
             <span>v1</span>
           </div>
         </div>
-        <div className="w-full h-ful flex flex-col  p-10">
+        <div className="w-full h-ful flex flex-col p-10">
           <Link
             className={cn(buttonVariants({ variant: "outline" }), "m-2")}
             href={`/sso/authflow/signin?${BASE_PARAMS(searchParams)}`}
           >
-            Login With Email
-          </Link>
-          <Link
-            className={cn(buttonVariants({ variant: "outline" }), "m-2")}
-            href={`/sso/authflow/signup?${BASE_PARAMS(searchParams)}`}
-          >
-            Create New Account
+            Add or Create Account
           </Link>
         </div>
       </div>

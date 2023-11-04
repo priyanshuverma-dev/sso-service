@@ -2,6 +2,7 @@ import { BASE, generateHash } from "@/lib/core";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes, createHash } from "crypto";
+import { EMAIL_API_ROUTE } from "../send/route";
 
 export const REGISTER_API_ROUTE = `${BASE}/api/register`;
 
@@ -49,7 +50,18 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log(newUser);
+    if (newUser) {
+      const makeEmail = await fetch(EMAIL_API_ROUTE, {
+        method: "POST",
+        body: JSON.stringify({
+          name: newUser.name,
+          email: newUser.email,
+        }),
+      });
+
+      const res = await makeEmail.json();
+      console.log(res);
+    }
 
     return NextResponse.json(newUser);
   } catch (error: any) {
