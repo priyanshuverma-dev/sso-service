@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 import { randomBytes } from "crypto";
 import { addSeconds } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
-export const FORGET_PASSWORD_RESET_API_ROUTE = `${BASE}/api/sso/recove/password`;
+export const FORGET_PASSWORD_RESET_API_ROUTE = `${BASE}/api/sso/recover/password`;
 
 export async function POST(req: NextRequest) {
   try {

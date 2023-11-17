@@ -3,7 +3,7 @@ import { BASE, generateSecureOTP, resend } from "@/lib/core";
 import prisma from "@/lib/prisma";
 import { addSeconds } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
-export const FORGET_PASSWORD_VERIFY_API_ROUTE = `${BASE}/api/sso/recove/verify`;
+export const FORGET_PASSWORD_VERIFY_API_ROUTE = `${BASE}/api/sso/recover/verify`;
 
 export async function POST(req: NextRequest) {
   try {
