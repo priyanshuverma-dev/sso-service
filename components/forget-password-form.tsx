@@ -18,8 +18,8 @@ import { BASE_PARAMS } from "@/lib/core";
 import OTPInput from "react-otp-input";
 import clsx from "clsx";
 import { SEND_OTP_API_ROUTE } from "@/app/api/sso/sendotp/route";
-import { FORGET_PASSWORD_VERIFY_API_ROUTE } from "@/app/api/sso/recove/verify/route";
-import { FORGET_PASSWORD_RESET_API_ROUTE } from "@/app/api/sso/recove/password/route";
+import { FORGET_PASSWORD_VERIFY_API_ROUTE } from "@/app/api/sso/recover/verify/route";
+import { FORGET_PASSWORD_RESET_API_ROUTE } from "@/app/api/sso/recover/password/route";
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };

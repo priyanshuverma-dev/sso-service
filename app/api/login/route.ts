@@ -30,8 +30,9 @@ export async function POST(req: NextRequest) {
     }
 
     const hashedPassword = hashPassword(password, user.salt);
+    console.log(hashedPassword);
 
-    if (user.hashedPassword !== hashedPassword) {
+    if (user.hashedPassword != hashedPassword) {
       return NextResponse.json(
         { message: "Incorrect password. Try again." },
         { status: 401 }

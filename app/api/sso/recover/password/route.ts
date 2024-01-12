@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
     const salt = randomBytes(16).toString("hex");
     const hashedPassword = hashPassword(password, user.salt);
 
+    const newhashedPassword = hashPassword(password, salt);
     if (user.hashedPassword === hashedPassword)
       throw new Error("You can't use you old password!😂");
 
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
         email,
       },
       data: {
-        hashedPassword,
+        hashedPassword: newhashedPassword,
         salt,
       },
     });
