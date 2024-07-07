@@ -1,10 +1,17 @@
-"use client";
-
-import { useUser } from "@/lib/session";
 import Link from "next/link";
+import Sites from "./_components/sites";
+import { serverAuth } from "@/lib/server-auth";
 
-export default function Home() {
-  const { user, loading } = useUser();
+export default async function Home() {
+  const user = await serverAuth();
+
+  if (!user) {
+    return (
+      <div>
+        <p>Loading</p>
+      </div>
+    );
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -18,6 +25,9 @@ export default function Home() {
             Create
           </Link>
         </nav>
+        <div className="flex flex-col space-y-4 mt-8">
+          <Sites userId={user.id} />
+        </div>
       </div>
     </main>
   );

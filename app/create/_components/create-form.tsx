@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { InputTags } from "@/components/ui/input-tags";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -33,6 +33,7 @@ const formSchema = z.object({
 
 export default function CreateSiteForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,7 +47,7 @@ export default function CreateSiteForm() {
     try {
       setIsLoading(true);
       console.log(values);
-      const res = await fetch("/api/sites", {
+      const res = await fetch("/api/site", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,12 +55,15 @@ export default function CreateSiteForm() {
         body: JSON.stringify(values),
       });
 
+      const data = await res.json();
+
       if (res.status !== 200) {
-        throw new Error("Failed to create site");
+        throw new Error(data.message ?? "An error occurred");
       }
 
       toast.success("Site created successfully");
-      // form.reset();
+      form.reset();
+      router.push(`/`);
     } catch (error: any) {
       console.error(error.message);
       toast.error(error.message);
@@ -119,7 +123,7 @@ export default function CreateSiteForm() {
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
           <Button disabled={isLoading} type="submit">
-            Save
+            {isLoading ? "Working..." : "Save"}
           </Button>
         </AlertDialogFooter>
       </form>

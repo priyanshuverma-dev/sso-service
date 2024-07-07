@@ -1,14 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { AUTH_COOKIE, BASE } from "./core";
-import { useCookies } from "next-client-cookies";
-
-export interface User {
-  id: string;
-  email: string;
-  name?: string;
-}
+import { BASE, User } from "./core";
 
 export const SessionContext = createContext<{
   user: User | null;

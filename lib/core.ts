@@ -9,7 +9,14 @@ export const AUTH_COOKIE = "__sso__secure_auth";
 export const BASE_PARAMS = (params: any) =>
   `client_id=${params?.client_id}&scope=${params?.scope}&response_type=${params?.response_type}&redirect_uri=${params?.redirect_uri}&state=${params.state}&client_secret=${params?.client_secret}`;
 
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+}
+
 import { createHmac, randomBytes } from "crypto";
+import { cookies } from "next/headers";
 export function generateHash(salt: string, password: string) {
   const hashedPassword = createHmac("sha256", salt)
     .update(password)

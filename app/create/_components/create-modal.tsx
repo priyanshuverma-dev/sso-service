@@ -24,7 +24,10 @@ export default function CreateModal() {
   };
 
   return (
-    <AlertDialog open={r === "/create"} onOpenChange={(open) => router.back()}>
+    <AlertDialog
+      open={r === "/create"}
+      onOpenChange={(open) => router.push("/")}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Register site for SSO</AlertDialogTitle>
