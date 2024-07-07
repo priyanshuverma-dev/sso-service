@@ -1,66 +1,36 @@
-# SSO Service
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-The SSO Service is a robust Single Sign-On (SSO) solution designed to streamline authentication and authorization across multiple applications. Users can authenticate once and seamlessly access various applications without the need for repeated login.
+## Getting Started
 
-## Installation
+First, run the development server:
 
-To install and run the SSO Service, follow these steps:
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-1. Clone the repository:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-    ```bash
-    git clone https://github.com/priyanshuverma-dev/sso-service.git
-    ```
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-2. Install the dependencies:
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-    ```bash
-    cd sso-service
-    yarn
-    ```
+## Learn More
 
-3. Configure the SSO Service:
+To learn more about Next.js, take a look at the following resources:
 
-    - Open the `.env.example` file and update essential configuration options, including database connection details and secret keys.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-4. Start the SSO Service:
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-    ```bash
-    yarn dev
-    ```
+## Deploy on Vercel
 
-For detailed information on utilizing the SSO Service endpoints, refer to the [API documentation](#).
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## Features
-
-### 1. Centralized Authentication and Authorization
-
-   The SSO Service provides a centralized mechanism for handling authentication and authorization, ensuring a seamless experience across multiple applications.
-
-### 2. Multiple Authentication Providers
-
-   Support for various authentication providers, including email/password and social logins, allowing users to choose the method that suits them best.
-
-### 3. Session Management and Token-Based Authentication
-
-   Efficient session management and secure token-based authentication for enhanced user security.
-
-### 4. Role-Based Access Control (RBAC)
-
-   Fine-grained authorization controls through Role-Based Access Control, enabling administrators to manage user permissions effectively.
-
-### 5. Customizable Login and Registration Flows
-
-   Flexibility to customize login and registration processes to align with specific application requirements.
-
-## Implementation
-
-The implementation details of the SSO Service can be found in the [sso-implementation repository](https://github.com/priyanshuverma-dev/sso-implementation). This repository provides examples and usage guidelines for seamlessly integrating the SSO Service into your applications.
-
-## Contributing
-
-Contributions to the SSO Service are welcome! If you wish to contribute, please follow the guidelines outlined in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
-
-## License
-
-This project is licensed under the MIT License.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

@@ -1,15 +1,15 @@
+import { NextRequest } from "next/server";
+// import { VALIDATE_API_ROUTE } from "@/app/api/validate/route";
+// import { Resend } from "resend";
 export const BASE = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
 export const JWT_SECRET = process.env.JWT_SECRET || "priyanshu";
-export const AUTH_COOKIE = "__SecureAuth";
-export const resend = new Resend("re_aJnm41fF_Bf4erb91zXgP3Z92X9pTFab9");
+export const AUTH_COOKIE = "__sso__secure_auth";
+// export const resend = new Resend("re_aJnm41fF_Bf4erb91zXgP3Z92X9pTFab9");
 
 export const BASE_PARAMS = (params: any) =>
   `client_id=${params?.client_id}&scope=${params?.scope}&response_type=${params?.response_type}&redirect_uri=${params?.redirect_uri}&state=${params.state}&client_secret=${params?.client_secret}`;
 
 import { createHmac, randomBytes } from "crypto";
-import { NextRequest } from "next/server";
-import { VALIDATE_API_ROUTE } from "@/app/api/validate/route";
-import { Resend } from "resend";
 export function generateHash(salt: string, password: string) {
   const hashedPassword = createHmac("sha256", salt)
     .update(password)
@@ -39,7 +39,7 @@ export async function getToken({
 
   if (token) {
     try {
-      const res = await fetch(VALIDATE_API_ROUTE, {
+      const res = await fetch(`${BASE}/api/auth/validate`, {
         headers: {
           Authorization: `Bearer ${token?.value}`,
         },
